@@ -15,18 +15,16 @@ class ReviewController extends Controller
      *
      * @return string
      */
-    public function add(Request $request)
+    public function index(int $productId)
     {
-        $productId=$request->product_id;
-
         $reviews= DB::table('reviews')
-
             ->join('users','reviews.user_id', '=', 'users.id')
             ->join('products','reviews.product_id', '=', 'products.id')
-            ->select('users.name', 'reviews.text', 'products.id')
+            ->join('review_images','review_images.review_id', '=', 'reviews.id')
+            ->select('users.name', 'reviews.text', 'products.id', 'review_images.image_path')
             ->where('product_id', '=', $productId)->get()->toArray();
 
-        return view('addReview',['reviews'=>$reviews, $productId]);
+        return view('addReview',['reviews' => $reviews, 'product_id' => $productId]);
     }
 
     /**
@@ -42,25 +40,34 @@ class ReviewController extends Controller
         $user = auth()->user();
 
         $review = new Review();
+
         $review->user_id = $user['id'];
         $review->product_id = $productId;
         $review->text = $data['text'];
+
         $review->save();
 
-        $fileName = $request->file->getClientOriginalName();
+        if (!empty($request->images)) {
+            foreach($request->images as $image) {
 
-        $reviewId = $review['id'];
+                $this->validate($request, [
+                    'file' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+                ]);
 
-        $filePath = $request->file->store('uploads','public');
+                $imageName = $image->getClientOriginalExtension();
 
-        $request->file->move(public_path('file'), $fileName);
+                $filePath = $image->store('uploads','public');
 
-        ReviewImage::create([
-            'review_id' => $reviewId,
-            'image_name' => $fileName,
-            'image_path' => $filePath
-        ]);
+                $image->move(public_path('images'), $imageName);
 
-        return redirect('/products');
+                ReviewImage::create([
+                    'review_id' => $review['id'],
+                    'image_name' => $imageName,
+                    'image_path' => $filePath
+                ]);
+            }
+        }
+
+        return back()->with('success', 'Отзыв добавлен.');
     }
 }

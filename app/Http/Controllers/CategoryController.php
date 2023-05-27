@@ -24,20 +24,62 @@ class CategoryController extends Controller
 
         $Reviews = json_decode($Reviews,true);
 
-        $countRewiews = [];
+        $countAllReviews = [];
 
         foreach ($Reviews as $key => $review){
-            $countRewiews[$key] = $review['name'];
+            $countAllReviews[$key] = $review['name'];
         }
 
-        $countRewiews = array_count_values($countRewiews);
+        $countReviews = array_count_values($countAllReviews);
 
-        arsort($countRewiews);
 
-        $popularCategory = array_key_first($countRewiews);
+        if (empty($countReviews)) {
 
-        $data= Category::query()->where('name', '=', $popularCategory)->get();
+            return view('popularCategory');
 
-        return view('popularCategory',['categories'=>$data]);
+        } elseif (count($countReviews) === 1) {
+
+            $category = array_keys($countReviews);
+
+            $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
+
+            return view('popularCategory',[
+                'top1Category' => $top1Category,
+                'countReviews' => $countReviews,
+            ]);
+
+        } elseif (count($countReviews) === 2) {
+
+            arsort($countReviews);
+
+            $category = array_keys($countReviews);
+
+            $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
+            $top2Category = Category::query()->where('name', '=', $category[1])->get()->toArray();
+
+            return view('popularCategory',[
+                'top1Category' => $top1Category,
+                'top2Category' => $top2Category,
+                'countReviews' => $countReviews,
+            ]);
+
+        } else {
+
+            arsort($countReviews);
+
+            $category = array_keys($countReviews);
+
+            $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
+            $top2Category = Category::query()->where('name', '=', $category[1])->get()->toArray();
+            $top3Category = Category::query()->where('name', '=', $category[2])->get()->toArray();
+
+
+            return view('popularCategory',[
+                'top1Category' => $top1Category,
+                'top2Category' => $top2Category,
+                'top3Category' => $top3Category,
+                'countReviews' => $countReviews,
+            ]);
+        }
     }
 }

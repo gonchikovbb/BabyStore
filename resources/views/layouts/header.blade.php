@@ -19,7 +19,7 @@ if(Session::has('user'))
 
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <form action="/поиск" class="navbar-form navbar">
+            <form action="/search" class="navbar-form navbar">
                 <div class="form-group">
                     <input type="text" name="query" class="form-control search-box" placeholder="Поиск">
                 </div>
@@ -27,10 +27,9 @@ if(Session::has('user'))
             </form>
             <ul class="nav navbar-nav navbar-left">
                 <li><a href="/">Главная страница</a></li>
-                <li><a href="products">Все товары</a></li>
-                <li><a href="categories">Категории</a></li>
-                <li><a href="popular_categories">Популярные категории</a></li>
-{{--                <li><a href="/reviews">Отзывы</a></li>--}}
+                <li><a href="{{ route('products') }}">Все товары</a></li>
+                <li><a href="{{ route('categories') }}">Категории</a></li>
+                <li><a href="{{ route('popular.categories') }}">Популярные категории</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="/carts">Избранное</a></li>
@@ -39,7 +38,7 @@ if(Session::has('user'))
                         <a class="nav-link" href="{{ route('login') }}">Войти</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register-user') }}">Регистрация</a>
+                        <a class="nav-link" href="{{ route('register.user') }}">Регистрация</a>
                     </li>
                 @else
                     <li class="nav-item">

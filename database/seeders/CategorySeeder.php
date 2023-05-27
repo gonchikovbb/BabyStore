@@ -19,7 +19,7 @@ class CategorySeeder extends Seeder
             ->sequence(
                 ['name' => 'Одежда'],
                 ['name' => 'Обувь'],
-                ['name' => 'Спорт и отдых'],
+                ['name' => 'Спорт'],
                 ['name' => 'Игрушки'],
                 ['name' => 'Мебель']
                 )

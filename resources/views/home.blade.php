@@ -6,6 +6,6 @@
     @endauth
     @guest
         <a class="btn btn-primary" href="{{ route('login') }}">Войти</a>
-        <a class="btn btn-info" href="{{ route('registration') }}">Регистрация</a>
+        <a class="btn btn-info" href="{{ route('register.user') }}">Регистрация</a>
     @endguest
 @endsection

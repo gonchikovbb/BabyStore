@@ -10,6 +10,9 @@
                             <div class="">
                                 <h3>{{$item['name']}}</h3>
                             </div>
+                            <form action="/remove_cart/{{$item['id']}}" method="GET">
+                                <button class="btn btn-primary">Удалить</button>
+                            </form>
                         </div>
                     </div>
                 @endforeach

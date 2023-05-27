@@ -12,12 +12,12 @@ class ReviewImage extends Model
 
     protected $fillable = [
         'review_id',
-        'photo_path',
-        'photo_name',
+        'image_name',
+        'image_path',
     ];
 
     protected $appends = [
-        'photo_url',
+        'image_url',
     ];
 
     public function getPhotoUrlAttribute(): ?string

@@ -45,7 +45,7 @@ class CartController extends Controller
 
             $cart->save();
 
-            return redirect()->route('products')->withSuccess(__('Товар успешно добавлен'));
+            return back()->with('success', 'Товар успешно добавлен.');
         } else {
             return redirect('/login');
         }
