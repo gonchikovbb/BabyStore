@@ -13,7 +13,7 @@ class Category extends Model
     protected $fillable = [
         'name'
     ];
-    public function getPopular(): HasManyThrough
+    public function popular(): HasManyThrough
     {
         return $this->hasManyThrough(Review::class, Product::class,
         'category_id', 'product_id', 'id','id');

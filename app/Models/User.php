@@ -16,10 +16,4 @@ class User extends Authenticatable
         'email',
         'password'
     ];
-
-    public function getId()
-    {
-        return $this->id;
-    }
-
 }

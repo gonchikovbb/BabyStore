@@ -3,15 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
-use App\Services\SaveReviewService;
+use App\Services\ReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
-    private SaveReviewService $saveReviewService;
+    private ReviewService $saveReviewService;
 
-    public function __construct(SaveReviewService $saveReviewService)
+    public function __construct(ReviewService $saveReviewService)
     {
         $this->saveReviewService = $saveReviewService;
     }
@@ -23,7 +23,7 @@ class ReviewController extends Controller
      */
     public function index(int $productId)
     {
-        $reviews= DB::table('reviews') // добавить модель, через релэйшнс юзерс и релейшн изображения в модели)
+        $reviews = DB::table('reviews')
             ->join('users','reviews.user_id', '=', 'users.id')
             ->join('products','reviews.product_id', '=', 'products.id')
             ->join('review_images','review_images.review_id', '=', 'reviews.id')
@@ -43,6 +43,7 @@ class ReviewController extends Controller
     {
         $request->validate([
             'text' => 'required|max:500',
+            'file' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
         ]);
 
         $data = $request->all();
@@ -55,9 +56,7 @@ class ReviewController extends Controller
         $review->product_id = $productId;
         $review->text = $data['text'];
 
-        $review->save();
-
-        $this->saveReviewService->saveImageReview($request, $review['id']);
+        $this->saveReviewService->saveReview($review, $request->images);
 
         return back()->with('success', 'Отзыв добавлен.');
     }
