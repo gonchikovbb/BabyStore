@@ -3,12 +3,18 @@
 namespace App\Http\Controllers;
 
 use App\Models\Review;
-use App\Models\ReviewImage;
+use App\Services\SaveReviewService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ReviewController extends Controller
 {
+    private SaveReviewService $saveReviewService;
+
+    public function __construct(SaveReviewService $saveReviewService)
+    {
+        $this->saveReviewService = $saveReviewService;
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -17,11 +23,11 @@ class ReviewController extends Controller
      */
     public function index(int $productId)
     {
-        $reviews= DB::table('reviews')
+        $reviews= DB::table('reviews') // добавить модель, через релэйшнс юзерс и релейшн изображения в модели)
             ->join('users','reviews.user_id', '=', 'users.id')
             ->join('products','reviews.product_id', '=', 'products.id')
             ->join('review_images','review_images.review_id', '=', 'reviews.id')
-            ->select('users.name', 'reviews.text', 'products.id', 'review_images.image_path')
+            ->select('users.name', 'reviews.text', 'review_images.image_path')
             ->where('product_id', '=', $productId)->get()->toArray();
 
         return view('addReview',['reviews' => $reviews, 'product_id' => $productId]);
@@ -35,11 +41,15 @@ class ReviewController extends Controller
      */
     public function save(Request $request, int $productId)
     {
+        $request->validate([
+            'text' => 'required|max:500',
+        ]);
+
         $data = $request->all();
 
-        $user = auth()->user();
-
         $review = new Review();
+
+        $user = auth()->user();
 
         $review->user_id = $user['id'];
         $review->product_id = $productId;
@@ -47,26 +57,7 @@ class ReviewController extends Controller
 
         $review->save();
 
-        if (!empty($request->images)) {
-            foreach($request->images as $image) {
-
-                $this->validate($request, [
-                    'file' => ['image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
-                ]);
-
-                $imageName = $image->getClientOriginalExtension();
-
-                $filePath = $image->store('uploads','public');
-
-                $image->move(public_path('images'), $imageName);
-
-                ReviewImage::create([
-                    'review_id' => $review['id'],
-                    'image_name' => $imageName,
-                    'image_path' => $filePath
-                ]);
-            }
-        }
+        $this->saveReviewService->saveImageReview($request, $review['id']);
 
         return back()->with('success', 'Отзыв добавлен.');
     }

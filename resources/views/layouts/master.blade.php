@@ -40,6 +40,10 @@
         float: left;
         width: 20%;
     }
+    .trening-products{
+        float: left;
+        width: 30%;
+    }
     .trending-wrapper{
         margin: 30px;
     }

@@ -7,7 +7,7 @@
                     <div class="card">
                         <h3 class="card-header text-center">Регистрация</h3>
                         <div class="card-body">
-                            <form action="{{ route('register.custom') }}" method="POST">
+                            <form action="{{ route('registration') }}" method="POST">
                                 @csrf
                                 <div class="form-group mb-3">
                                     <input type="text" placeholder="Имя" id="name" class="form-control" name="name"

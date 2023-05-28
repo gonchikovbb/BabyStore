@@ -32,13 +32,13 @@ if(Session::has('user'))
                 <li><a href="{{ route('popular.categories') }}">Популярные категории</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="/carts">Избранное</a></li>
+                <li><a href="/favorites">Избранное</a></li>
                 @guest
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('login') }}">Войти</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('register.user') }}">Регистрация</a>
+                        <a class="nav-link" href="{{ route('register') }}">Регистрация</a>
                     </li>
                 @else
                     <li class="nav-item">

@@ -13,10 +13,10 @@
                 <form action="/add_to_cart" method="POST">
                     @csrf
                     <input type="hidden" name="product_id" value={{$item['id']}}>
-                    <button class="btn btn-primary">Добавить в избранное</button>
+                    <button class="btn btn-link">Добавить в избранное</button>
                 </form>
                 <form action="/review/{{$item['id']}}" method="GET">
-                    <button class="btn btn-primary">Добавить отзыв</button>
+                    <button class="btn btn-link">Добавить отзыв</button>
                 </form>
                 </a>
             </div>

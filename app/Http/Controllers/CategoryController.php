@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use Illuminate\Support\Facades\DB;
 
 class CategoryController extends Controller
 {
@@ -16,30 +15,23 @@ class CategoryController extends Controller
 
     public function indexPopular()
     {
-        $Reviews= DB::table('products')
-            ->join('reviews','products.id', '=', 'reviews.product_id')
-            ->join('categories','categories.id', '=', 'products.category_id')
-            ->select('categories.name', 'categories.id', 'reviews.text')
-            ->get();
+        $popularCategories = Category::with('getPopular')->get()->toArray();
 
-        $Reviews = json_decode($Reviews,true);
+        $countReviews = [];
 
-        $countAllReviews = [];
-
-        foreach ($Reviews as $key => $review){
-            $countAllReviews[$key] = $review['name'];
+        foreach ($popularCategories as $popularCategory) {
+            $countReviews[$popularCategory['name']] = count($popularCategory['get_popular']);
         }
 
-        $countReviews = array_count_values($countAllReviews);
+        arsort($countReviews);
 
+        $category = array_keys($countReviews);
 
-        if (empty($countReviews)) {
+        if (empty($category)) {
 
             return view('popularCategory');
 
-        } elseif (count($countReviews) === 1) {
-
-            $category = array_keys($countReviews);
+        } elseif (count($category) === 1) {
 
             $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
 
@@ -49,10 +41,6 @@ class CategoryController extends Controller
             ]);
 
         } elseif (count($countReviews) === 2) {
-
-            arsort($countReviews);
-
-            $category = array_keys($countReviews);
 
             $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
             $top2Category = Category::query()->where('name', '=', $category[1])->get()->toArray();
@@ -65,14 +53,9 @@ class CategoryController extends Controller
 
         } else {
 
-            arsort($countReviews);
-
-            $category = array_keys($countReviews);
-
             $top1Category = Category::query()->where('name', '=', $category[0])->get()->toArray();
             $top2Category = Category::query()->where('name', '=', $category[1])->get()->toArray();
             $top3Category = Category::query()->where('name', '=', $category[2])->get()->toArray();
-
 
             return view('popularCategory',[
                 'top1Category' => $top1Category,

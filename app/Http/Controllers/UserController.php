@@ -15,7 +15,7 @@ class UserController extends Controller
         return view('auth.login');
     }
 
-    public function customLogin(Request $request)
+    public function login(Request $request)
     {
         $request->validate([
             'email' => 'required',
@@ -37,7 +37,7 @@ class UserController extends Controller
         return view('auth.registration');
     }
 
-    public function customRegistration(Request $request)
+    public function postRegistration(Request $request)
     {
         $request->validate([
             'name' => 'required',
@@ -47,7 +47,7 @@ class UserController extends Controller
 
         $data = $request->all();
 
-        $check = $this->create($data);
+        $this->create($data);
 
         return redirect("login")->withSuccess('You have signed-in');
     }

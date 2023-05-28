@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\CartController;
+use App\Http\Controllers\FavoritesController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
@@ -22,9 +22,9 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('login', [UserController::class, 'index'])->name('login');
-Route::post('custom-login', [UserController::class, 'customLogin'])->name('login.custom');
-Route::get('registration', [UserController::class, 'registration'])->name('register.user');
-Route::post('custom-registration', [UserController::class, 'customRegistration'])->name('register.custom');
+Route::post('login', [UserController::class, 'login']);
+Route::get('registration', [UserController::class, 'registration'])->name('register');
+Route::post('registration', [UserController::class, 'postRegistration'])->name('registration');
 Route::get('signout', [UserController::class, 'signOut'])->name('signout');
 
 Route::get('products', [ProductController::class,'index'])->name('products');
@@ -32,13 +32,11 @@ Route::get('categories', [CategoryController::class,'index'])->name('categories'
 Route::get('categories/{category_id}', [ProductController::class,'showByCategoryId']);
 Route::get('popular_categories', [CategoryController::class,'indexPopular'])->name('popular.categories');
 Route::get("search",[ProductController::class,'search'])->name('search');
-
 Route::get('review/{product_id}', [ReviewController::class, 'index'])->name('index.review');
 
 Route::middleware(['auth'])->group(function () {
-    Route::post("add_to_cart",[CartController::class,'addToCart']);
-    Route::get('carts', [CartController::class,'index']);
-    Route::get("remove_cart/{id}",[CartController::class,'removeCart']);
-
+    Route::post("add_to_favorites",[FavoritesController::class,'addToFavorites']);
+    Route::get('favorites', [FavoritesController::class,'index']);
+    Route::get("remove_from_favorites/{id}",[FavoritesController::class,'removeFromFavorites']);
     Route::post('save_to_review/{product_id}', [ReviewController::class, 'save'])->name('save.review');
 });

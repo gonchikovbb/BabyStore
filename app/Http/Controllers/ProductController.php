@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class ProductController extends Controller
 {
@@ -32,6 +31,11 @@ class ProductController extends Controller
 
     public function search(Request $request)
     {
+
+        $request->validate([
+            'query' => 'required',
+        ]);
+
         $dataProduct= Product::where('name', 'like', '%'.$request->input('query').'%')->get();
 
         $dataCategory= Category::where('name', 'like', '%'.$request->input('query').'%')->get();
